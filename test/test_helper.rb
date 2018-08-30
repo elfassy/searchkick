@@ -3,7 +3,7 @@ Bundler.require(:default)
 require "minitest/autorun"
 require "minitest/pride"
 require "logger"
-require "active_support/core_ext" if defined?(NoBrainer)
+require "active_support/core_ext" if defined?(NoBrainer) || defined?(Neo4j)
 require "active_support/notifications"
 
 Searchkick.index_suffix = ENV["TEST_ENV_NUMBER"]
@@ -37,6 +37,10 @@ if defined?(ActiveJob)
 end
 
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["NOTIFICATIONS"]
+
+def neo4j?
+  defined?(Neo4j)
+end
 
 def nobrainer?
   defined?(NoBrainer)
@@ -285,6 +289,85 @@ elsif defined?(Cequel)
   end
 
   [Product, Store, Region, Speaker, Animal, Sku, Song].each(&:synchronize_schema)
+
+elsif neo4j?
+  require 'neo4j/core/cypher_session/adaptors/http'
+
+  Neo4j::ActiveBase.on_establish_session do
+    neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new('http://neo4j:admin@localhost:7474')
+    Neo4j::Core::CypherSession.new(neo4j_adaptor)
+  end
+
+  Neo4j::ActiveBase.current_session.query('MATCH (n) DETACH DELETE n')
+  %w[Animal Product Store Region Speaker Sku Song].each do |table|
+    Neo4j::ActiveBase.current_session.query("CREATE CONSTRAINT ON (n:#{table}) ASSERT n.uuid IS UNIQUE")
+  end
+
+
+  class Product
+    include Neo4j::ActiveNode
+    include Neo4j::Timestamps
+
+    property :store_id,     type: Integer
+    property :name,         type: String
+    property :in_stock,     type: Boolean
+    property :backordered,  type: Boolean
+    property :orders_count, type: Integer
+    property :found_rate,   type: BigDecimal
+    property :price,        type: Integer
+    property :color,        type: String
+    property :latitude,     type: BigDecimal
+    property :longitude,    type: BigDecimal
+    property :description, type: String
+    property :alt_description, type: String
+
+    has_one :out, :store, type: :store
+  end
+
+  class Store
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+
+    has_many :in, :products, origin: :store
+  end
+
+  class Region
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+    property :text, type: String
+  end
+
+  class Speaker
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+  end
+
+  class Animal
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+  end
+
+  class Dog < Animal
+  end
+
+  class Cat < Animal
+  end
+
+  class Sku
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+  end
+
+  class Song
+    include Neo4j::ActiveNode
+
+    property :name, type: String
+  end
 else
   require "active_record"
 

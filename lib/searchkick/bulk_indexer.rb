@@ -18,7 +18,7 @@ module Searchkick
         Searchkick.with_redis { |r| r.srem(batches_key, batch_id) } if batch_id
       elsif full && async
         full_reindex_async(relation)
-      elsif relation.respond_to?(:find_in_batches)
+      elsif relation.respond_to?(:find_in_batches) && !defined?(Neo4j)
         if resume
           # use total docs instead of max id since there's not a great way
           # to get the max _id without scripting since it's a string

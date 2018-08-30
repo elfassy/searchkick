@@ -20,7 +20,7 @@ Plus:
 - autocomplete
 - “Did you mean” suggestions
 - supports many languages
-- works with ActiveRecord, Mongoid, and NoBrainer
+- works with ActiveRecord, Mongoid, NoBrainer and neo4j
 
 :speech_balloon: Get [handcrafted updates](https://chartkick.us7.list-manage.com/subscribe?u=952c861f99eb43084e0a49f98&id=6ea6541e8e&group[0][4]=true) for new features
 

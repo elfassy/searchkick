@@ -2,6 +2,7 @@
 
 - Fixed deletes with routing and `async` callbacks
 - Fixed deletes with routing and `queue` callbacks
+- Added support for neo4j
 
 ## 3.1.1
 

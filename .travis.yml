@@ -27,3 +27,4 @@ matrix:
       env: ELASTICSEARCH_VERSION=5.0.1
     - gemfile: test/gemfiles/mongoid6.gemfile
     - gemfile: test/gemfiles/mongoid5.gemfile
+    - gemfile: test/gemfiles/neo4j.gemfile

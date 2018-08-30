@@ -4,7 +4,8 @@ module Searchkick
       "ActiveRecord::RecordNotFound",
       "Mongoid::Errors::DocumentNotFound",
       "NoBrainer::Error::DocumentNotFound",
-      "Cequel::Record::RecordNotFound"
+      "Cequel::Record::RecordNotFound",
+      "Neo4j::ActiveNode::Labels::RecordNotFound"
     ]
 
     queue_as { Searchkick.queue_name }

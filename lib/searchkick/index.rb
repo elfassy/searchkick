@@ -256,7 +256,7 @@ module Searchkick
 
     # https://gist.github.com/jarosan/3124884
     # http://www.elasticsearch.org/blog/changing-mapping-with-zero-downtime/
-    def reindex_scope(relation, import: true, resume: false, retain: false, async: false, refresh_interval: nil, scope: nil)
+    def reindex_scope(relation, import: true, resume: false, retain: false, async: false, refresh_interval: nil, refresh: false, scope: nil)
       if resume
         index_name = all_indices.sort.last
         raise Searchkick::Error, "No index to resume" unless index_name

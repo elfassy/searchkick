@@ -189,7 +189,7 @@ module Searchkick
   def self.load_records(records, ids)
     records =
       if records.respond_to?(:primary_key)
-        # ActiveRecord
+        # ActiveRecord and Neo4j
         records.where(records.primary_key => ids) if records.primary_key
       elsif records.respond_to?(:queryable)
         # Mongoid 3+

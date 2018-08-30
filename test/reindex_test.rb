@@ -7,7 +7,7 @@ class ReindexTest < Minitest::Test
   end
 
   def test_scoped
-    skip if nobrainer? || cequel?
+    skip if nobrainer? || cequel? || neo4j?
 
     store_names ["Product A"]
     Searchkick.callbacks(false) do
@@ -18,7 +18,7 @@ class ReindexTest < Minitest::Test
   end
 
   def test_associations
-    skip if nobrainer? || cequel?
+    skip if nobrainer? || cequel? || neo4j?
 
     store_names ["Product A"]
     store = Store.create!(name: "Test")

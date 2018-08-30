@@ -12,7 +12,7 @@ class WhereTest < Minitest::Test
     assert_search "product", ["Product A", "Product B"], where: {in_stock: true}
 
     # due to precision
-    unless cequel?
+    unless cequel? || neo4j?
       # date
       assert_search "product", ["Product A"], where: {created_at: {gt: now - 1}}
       assert_search "product", ["Product A", "Product B"], where: {created_at: {gte: now - 1}}
